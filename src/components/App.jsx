@@ -9,16 +9,15 @@ class App extends Component {
     filter: '',
   };
 
-  addContact = (name, number, id) => {
+  addContact = newContact => {
     const existingContact = this.state.contacts.find(
-      contact => contact.name === name
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
     if (existingContact) {
-      alert(`"${name}" is already in contacts!`);
+      alert(`"${newContact.name}" is already in contacts!`);
       return;
     }
 
-    const newContact = { id, name, number };
     this.setState(prevState => ({
       contacts: [...prevState.contacts, newContact],
     }));
@@ -32,6 +31,15 @@ class App extends Component {
 
   filterContacts = filter => {
     this.setState({ filter });
+  };
+
+  getFilteredContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter(
+      contact =>
+        contact.name &&
+        contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
   };
 
   render() {
@@ -54,7 +62,7 @@ class App extends Component {
           <h2>Contacts</h2>
           <Filter filterContacts={this.filterContacts} />
           <ContactList
-            contacts={this.state.contacts}
+            contacts={this.getFilteredContacts()}
             filter={this.state.filter}
             deleteContact={this.deleteContact}
           />
